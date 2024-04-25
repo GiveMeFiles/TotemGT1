@@ -9,28 +9,12 @@
             font-family: Arial, sans-serif;
             text-align: center;
         }
-        #qr-code {
-            width: 200px;
-            height: 200px;
-            margin: 20px auto;
-        }
-        #ar-logo {
-            width: 300px;
-            height: 300px;
-            margin: 20px auto;
-        }
     </style>
 </head>
 <body>
     <h1>Scan the QR code to see the logo in AR</h1>
-    <img id="qr-code" src="qr.png" alt="QR code">
-    <div id="ar-logo"></div>
 
     <script>
-        // Get the QR code and logo elements
-        const qrCode = document.getElementById('qr-code');
-        const arLogo = document.getElementById('ar-logo');
-
         // Set up the AR scene
         const scene = new XR.Scene();
         const camera = new XR.Camera();
@@ -50,15 +34,15 @@
             });
 
         // Set up the QR code scanner
-        const qrScanner = new QRScanner(qrCode, {
-            onScan: () => {
+        const qrScanner = new QRScanner({
+            onScan: (qrCode) => {
                 // When the QR code is scanned, start the AR experience
-                startARExperience();
+                startARExperience(qrCode);
             },
         });
 
         // Start the AR experience
-        function startARExperience() {
+        function startARExperience(qrCode) {
             // Request access to the camera
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(stream => {
@@ -68,7 +52,13 @@
                     video.play();
 
                     // Add the video element to the page
-                    arLogo.appendChild(video);
+                    document.body.appendChild(video);
+
+                    // Create an AR marker using the QR code
+                    const marker = new XR.Marker(qrCode);
+
+                    // Add the marker to the scene
+                    scene.add(marker);
 
                     // Start the AR renderer
                     renderer.start();
