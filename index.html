@@ -9,6 +9,9 @@
             font-family: Arial, sans-serif;
             text-align: center;
         }
+        #video {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -20,38 +23,36 @@
         ar
         camera-controls
         autoplay
-        style="width: 100%; height: 100vh;"
+        style="width: 100%; height: 100vh; display: none;"
     ></model-viewer>
 
-    <script>
-        // Set up the QR code scanner
-        const qrScanner = new ZXing.BrowserQRCodeReader();
+    <video id="video" width="100%" height="100vh" autoplay></video>
 
-        // Start the QR code scanner
-        qrScanner.decodeFromVideoDevice()
-            .then(result => {
-                // When the QR code is scanned, start the AR experience
-                startARExperience(result.text);
+    <script>
+        // Request access to the camera
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+            .then(stream => {
+                // Set the video source to the camera stream
+                document.getElementById("video").srcObject = stream;
+
+                // Set up the QR code scanner
+                const qrScanner = new ZXing.BrowserQRCodeReader();
+                qrScanner.decodeFromVideoDevice(stream)
+                    .then(result => {
+                        // When the QR code is scanned, start the AR experience
+                        startARExperience(result.text);
+                    })
+                    .catch(error => console.error('Error scanning QR code:', error));
             })
-            .catch(error => console.error('Error scanning QR code:', error));
+            .catch(error => console.error('Error accessing camera:', error));
 
         // Start the AR experience
         function startARExperience(qrCode) {
             // Get the model viewer element
             const modelViewer = document.getElementById('model-viewer');
 
+            // Show the 3D model
+            modelViewer.style.display = 'block';
+
             // Set up the AR session
-            modelViewer.arSession = new ARSession(qrCode);
-
-            // Start the AR experience
-            modelViewer.requestAR();
-        }
-    </script>
-
-    <!-- Include the ZXing library -->
-    <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.18.5/umd/index.min.js"></script>
-
-    <!-- Include the Model-Viewer library -->
-    <script src="https://unpkg.com/@google/model-viewer@1.12.0/dist/model-viewer.js"></script>
-</body>
-</html>
+            modelViewer.arSession = new
