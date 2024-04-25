@@ -30,65 +30,67 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.2.2/aframe-ar.js"></script>
     <script>
         function init() {
-            // Load the GLB model
-            const loader = new THREE.GLTFLoader();
-            loader.load('LOGO_GREENTECH250424.glb', (gltf) => {
-                const model = gltf.scene;
-                model.scale.set(0.5, 0.5, 0.5); // Increased the scale to make the model larger
+            // Handle camera permission issues
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    console.log('Camera permission granted');
 
-                // Create the AR scene
-                const arScene = new THREEx.ArToolkitSource({
-                    sourceType: 'webcam'
-                });
+                    // Load the GLB model
+                    const loader = new THREE.GLTFLoader();
+                    loader.load('LOGO_GREENTECH250424.glb', (gltf) => {
+                        const model = gltf.scene;
+                        model.scale.set(0.5, 0.5, 0.5); // Increased the scale to make the model larger
 
-                const arCamera = new THREEx.ArToolkitContext({
-                    detectionMode: 'mono',
-                    patternRatio: 0.5 // Ajustez ce ratio en fonction de la taille de votre QR code
-                });
+                        // Create the AR scene
+                        const arScene = new THREEx.ArToolkitSource({
+                            sourceType: 'webcam'
+                        });
 
-                // Configurez AR.js pour utiliser votre QR code comme marqueur
-                const markerControls = new THREEx.ArMarkerControls(arCamera, {
-                    type: 'pattern',
-                    patternUrl: 'https://github.com/GiveMeFiles/TotemGT1/blob/main/QR.png'
-                });
+                        const arCamera = new THREEx.ArToolkitContext({
+                            detectionMode: 'mono',
+                            patternRatio: 0.5 // Ajustez ce ratio en fonction de la taille de votre QR code
+                        });
 
-                // Initialize AR context
-                arCamera.init(() => {
-                    // Create a new scene
-                    const scene = new THREE.Scene();
-                    scene.add(model);
+                        // Configurez AR.js pour utiliser votre QR code comme marqueur
+                        const markerControls = new THREEx.ArMarkerControls(arCamera, {
+                            type: 'pattern',
+                            patternUrl: 'https://github.com/GiveMeFiles/TotemGT1/blob/main/QR.png'
+                        });
 
-                    // Create the renderer
-                    const renderer = new THREE.WebGLRenderer({
-                        canvas: document.getElementById('ar-view'),
-                        antialias: true,
-                        alpha: true
+                        // Initialize AR context
+                        arCamera.init(() => {
+                            // Create a new scene
+                            const scene = new THREE.Scene();
+                            scene.add(model);
+
+                            // Create the renderer
+                            const renderer = new THREE.WebGLRenderer({
+                                canvas: document.getElementById('ar-view'),
+                                antialias: true,
+                                alpha: true
+                            });
+                            renderer.setSize(window.innerWidth, window.innerHeight);
+                            
+                            // Attach the AR context to the camera
+                            arCamera.arController.attachPatternDetection(arScene.context);
+                            
+                            // Render the scene
+                            function animate() {
+                                requestAnimationFrame(animate);
+                                arScene.context.update(arScene.domElement);
+                                renderer.render(scene, arCamera.getCamera());
+                            }
+                            animate();
+                        });
                     });
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                    
-                    // Attach the AR context to the camera
-                    arCamera.arController.attachPatternDetection(arScene.context);
-                    
-                    // Render the scene
-                    function animate() {
-                        requestAnimationFrame(animate);
-                        arScene.context.update(arScene.domElement);
-                        renderer.render(scene, arCamera.getCamera());
-                    }
-                    animate();
+                })
+                .catch(error => {
+                    console.error('Error granting camera permission:', error);
                 });
-            });
         }
 
-        // Handle camera permission issues
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                console.log('Camera permission granted');
-                init(); // Call init once camera permission is granted
-            })
-            .catch(error => {
-                console.error('Error granting camera permission:', error);
-            });
+        // Call init when the page loads
+        init();
     </script>
 </body>
 </html>
