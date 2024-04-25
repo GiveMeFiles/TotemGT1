@@ -1,5 +1,5 @@
 // Load the GLB model
-const loader = new THREE.GLTFLoader();
+const loader = new THREE.GLTF2Loader();
 loader.load('LOGO_GREENTECH250424.glb', (gltf) => {
     const model = gltf.scene;
     model.scale.set(0.1, 0.1, 0.1); // adjust the scale to your liking
