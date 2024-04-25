@@ -1,77 +1,59 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TotemGT1</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/favicon-16x16.png">
-    <link rel="manifest" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/site.webmanifest">
-    <link rel="mask-icon" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
-	<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        #ar-container {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #ar-view {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TotemGT1 AR</title>
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe-master.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ar.js@1.1.6/dist/ar.js"></script>
+  <script src="https://raw.githubusercontent.com/GiveMeFiles/ARWeb/main/focus.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+  </style>
 </head>
 <body>
-    <div id="ar-container">
-        <div id="ar-view"></div>
-    </div>
-    <script>
-        function init() {
-            // Handle camera permission issues
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    console.log('Camera permission granted');
+  <!-- Create a QR code marker -->
+  <a-scene embedded arjs="source: webcam; debugUIEnabled: false;">
+    <a-marker type="pattern" url="<?php echo $_SERVER['REQUEST_URI']; ?>qrcode.patt">
+      <!-- Render the 3D logo -->
+      <a-entity gltf-model="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/TotemGT1.glb" scale="0.1 0.1 0.1" position="0 0 0"></a-entity>
+    </a-marker>
+    <!-- Add lighting to the scene -->
+    <a-light type="ambient" color="#ffffff"></a-light>
+    <a-light type="directional" color="#ffffff" position="-1 1 1"></a-light>
+  </a-scene>
 
-                    // Load the GLB model using A-Frame
-                    const scene = document.createElement('a-scene');
-                    document.body.appendChild(scene);
+  <!-- Initialize the AR experience -->
+  <script>
+    // Initialize AR.js
+    ARjs.init();
 
-                    const assets = document.createElement('a-assets');
-                    scene.appendChild(assets);
+    // Generate the QR code pattern file dynamically
+    const focus = new Focus();
+    const patternUrl = focus.generatePatternUrl();
 
-                    const assetItem = document.createElement('a-asset-item');
-                    assetItem.id = 'logo-glb';
-                    assetItem.src = 'https://cors-anywhere.herokuapp.com/https://github.com/GiveMeFiles/TotemGT1/blob/main/LOGO%20GREENTECH250424.glb?raw=true';
-                    assets.appendChild(assetItem);
+    // Update the marker URL
+    document.querySelector('a-marker').setAttribute('url', patternUrl);
 
-                    const entity = document.createElement('a-entity');
-                    entity.setAttribute('gltf-model', '#logo-glb');
+    // Get the QR code marker
+    const marker = document.querySelector('a-marker');
 
-                    // Add a light to the scene (e.g., a directional light)
-                    const light = document.createElement('a-light');
-                    light.setAttribute('type', 'directional');
-                    light.setAttribute('color', '#ffffff');
-                    light.setAttribute('intensity', 1);
-                    scene.appendChild(light);
+    // Add an event listener to the marker
+    marker.addEventListener('markerFound', () => {
+      // Render the 3D logo
+      const logoEntity = document.querySelector('a-entity[gltf-model="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/TotemGT1.glb"]');
+      logoEntity.object3D.visible = true;
+    });
 
-                    scene.appendChild(entity);
-                })
-                .catch(error => {
-                    console.error('Error granting camera permission:', error);
-                });
-        }
-
-        // Call init when the page loads
-        init();
-    </script>
+    // Add an event listener to the scene
+    document.querySelector('a-scene').addEventListener('camera-ready', () => {
+      // Start the AR experience
+      ARjs.start();
+    });
+  </script>
 </body>
 </html>
