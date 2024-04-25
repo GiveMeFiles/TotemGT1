@@ -2,7 +2,7 @@
 const loader = new THREE.GLTF2Loader();
 loader.load('LOGO_GREENTECH250424.glb', (gltf) => {
     const model = gltf.scene;
-    model.scale.set(0.1, 0.1, 0.1); // adjust the scale to your liking
+    model.scale.set(0.1, 0.1, 0.1);
 
     // Create the AR scene
     const arScene = new AR.Scene();
@@ -39,3 +39,12 @@ loader.load('LOGO_GREENTECH250424.glb', (gltf) => {
         model.rotation.z = gamma * Math.PI / 180;
     });
 });
+
+// Handle camera permission issues
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        console.log('Camera permission granted');
+    })
+    .catch(error => {
+        console.error('Error granting camera permission:', error);
+    });
