@@ -26,60 +26,65 @@
     <div id="ar-container">
         <div id="ar-view"></div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.2.2/aframe-ar.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.163.0/three.module.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.2.2/aframe-ar.js"></script>
     <script>
-        // Load the GLB model
-        const loader = new THREE.GLTF2Loader();
-        loader.load('LOGO_GREENTECH250424.glb', (gltf) => {
-            const model = gltf.scene;
-            model.scale.set(0.5, 0.5, 0.5); // Increased the scale to make the model larger
+        function init() {
+            // Load the GLB model
+            const loader = new THREE.GLTFLoader();
+            loader.load('LOGO_GREENTECH250424.glb', (gltf) => {
+                const model = gltf.scene;
+                model.scale.set(0.5, 0.5, 0.5); // Increased the scale to make the model larger
 
-            // Create the AR scene
-            const arScene = new THREEx.ArToolkitSource();
-            arScene.add(model);
+                // Create the AR scene
+                const arScene = new THREEx.ArToolkitSource({
+                    sourceType: 'webcam'
+                });
 
-            // Create the AR camera
-            const arCamera = new AR.Camera();
-            arCamera.aspect = window.innerWidth / window.innerHeight;
+                const arCamera = new THREEx.ArToolkitContext({
+                    detectionMode: 'mono',
+                    patternRatio: 0.5 // Ajustez ce ratio en fonction de la taille de votre QR code
+                });
 
-            // Create the renderer
-            const renderer = new THREE.WebGLRenderer({
-                canvas: document.getElementById('ar-view'),
-                antialias: true,
+                // Configurez AR.js pour utiliser votre QR code comme marqueur
+                const markerControls = new THREEx.ArMarkerControls(arCamera, {
+                    type: 'pattern',
+                    patternUrl: 'https://github.com/GiveMeFiles/TotemGT1/blob/main/QR.png'
+                });
+
+                // Initialize AR context
+                arCamera.init(() => {
+                    // Create a new scene
+                    const scene = new THREE.Scene();
+                    scene.add(model);
+
+                    // Create the renderer
+                    const renderer = new THREE.WebGLRenderer({
+                        canvas: document.getElementById('ar-view'),
+                        antialias: true,
+                        alpha: true
+                    });
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    
+                    // Attach the AR context to the camera
+                    arCamera.arController.attachPatternDetection(arScene.context);
+                    
+                    // Render the scene
+                    function animate() {
+                        requestAnimationFrame(animate);
+                        arScene.context.update(arScene.domElement);
+                        renderer.render(scene, arCamera.getCamera());
+                    }
+                    animate();
+                });
             });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-
-            // Animate the scene
-            function animate() {
-                requestAnimationFrame(animate);
-                arScene.update();
-                renderer.render(arScene, arCamera);
-            }
-            animate();
-
-            // Add event listeners for device orientation
-            window.addEventListener('deviceorientation', (event) => {
-                const alpha = event.alpha;
-                const beta = event.beta;
-                const gamma = event.gamma;
-
-                // Rotate the model based on device orientation
-                model.rotation.x = beta * Math.PI / 180;
-                model.rotation.y = alpha * Math.PI / 180;
-                model.rotation.z = gamma * Math.PI / 180;
-
-                // Smooth out the rotation animation
-                model.rotation.x += (beta * Math.PI / 180 - model.rotation.x) * 0.1;
-                model.rotation.y += (alpha * Math.PI / 180 - model.rotation.y) * 0.1;
-                model.rotation.z += (gamma * Math.PI / 180 - model.rotation.z) * 0.1;
-            });
-        });
+        }
 
         // Handle camera permission issues
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(stream => {
                 console.log('Camera permission granted');
+                init(); // Call init once camera permission is granted
             })
             .catch(error => {
                 console.error('Error granting camera permission:', error);
