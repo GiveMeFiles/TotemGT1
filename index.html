@@ -17,7 +17,7 @@
 <body>
   <!-- Create a QR code marker -->
   <a-scene embedded arjs="source: webcam; debugUIEnabled: false;">
-    <a-marker type="pattern" url="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/qrcode.patt">
+    <a-marker type="pattern" url="<?php echo $_SERVER['REQUEST_URI']; ?>qrcode.patt">
       <!-- Render the 3D logo -->
       <a-entity gltf-model="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/TotemGT1.glb" scale="0.1 0.1 0.1" position="0 0 0"></a-entity>
     </a-marker>
@@ -30,6 +30,14 @@
   <script>
     // Initialize AR.js
     ARjs.init();
+
+    // Generate the QR code pattern file dynamically
+    const qrcode = new ARjs.QRCode();
+    qrcode.addPattern('https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/qrcode.png');
+    const patternUrl = qrcode.generatePatternUrl();
+
+    // Update the marker URL
+    document.querySelector('a-marker').setAttribute('url', patternUrl);
 
     // Get the QR code marker
     const marker = document.querySelector('a-marker');
