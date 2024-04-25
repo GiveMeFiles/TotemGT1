@@ -4,83 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TotemGT1</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/favicon-16x16.png">
-    <link rel="manifest" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/site.webmanifest">
-    <link rel="mask-icon" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
-    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@93435eb302cd4c7de7df0daaeeb48bb87383581f/dist/aframe-master.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1.2.0/dist/aframe-master.min.js"></script>
     <style>
         body {
             margin: 0;
             background-color: #f0f0f0;
         }
-        #ar-container {
+        #ar-view {
             width: 100vw;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #ar-view {
-            width: 100%;
-            height: 100%;
         }
     </style>
 </head>
 <body>
-    <div id="ar-container">
-        <div id="ar-view"></div>
-    </div>
+    <a-scene id="ar-view" arjs="source: webcam; debugUIEnabled: false;">
+        <a-assets>
+            <a-asset-item id="logo-glb" src="https://cors-anywhere.herokuapp.com/https://github.com/GiveMeFiles/TotemGT1/blob/main/LOGO%20GREENTECH250424.glb?raw=true"></a-asset-item>
+        </a-assets>
+        <a-entity gltf-model="#logo-glb" scale="0.1 0.1 0.1" position="0 0 -2"></a-entity>
+        <a-light type="ambient" color="#ffffff" intensity="1"></a-light>
+    </a-scene>
     <script>
-        function init() {
-            // Handle camera permission issues
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    console.log('Camera permission granted');
-
-                    // Load the GLB model using A-Frame
-                    const scene = document.createElement('a-scene');
-                    document.body.appendChild(scene);
-
-                    const assets = document.createElement('a-assets');
-                    scene.appendChild(assets);
-
-                    const assetItem = document.createElement('a-asset-item');
-                    assetItem.id = 'logo-glb';
-                    assetItem.src = 'https://cors-anywhere.herokuapp.com/https://github.com/GiveMeFiles/TotemGT1/blob/main/LOGO%20GREENTECH250424.glb?raw=true';
-                    assets.appendChild(assetItem);
-
-                    const entity = document.createElement('a-entity');
-                    entity.setAttribute('gltf-model', '#logo-glb');
-
-                    // Add a light to the scene (e.g., a directional light)
-                    const light = document.createElement('a-light');
-                    light.setAttribute('type', 'directional');
-                    light.setAttribute('color', '#ffffff');
-                    light.setAttribute('intensity', 1);
-                    scene.appendChild(light);
-
-                    // Update lighting to use the new system
-                    scene.lights = [light];
-                    scene.lights[0].castShadow = true;
-
-                    scene.appendChild(entity);
-
-                    // Add some debugging logs to help identify the e null pointer exception
-                    console.log('Scene:', scene);
-                    console.log('Entity:', entity);
-                    console.log('Light:', light);
-                })
-                .catch(error => {
-                    console.error('Error granting camera permission:', error);
-                });
-        }
-
-        // Call init when the page loads
-        init();
+        // Handle camera permission issues
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                console.log('Camera permission granted');
+            })
+            .catch(error => {
+                console.error('Error granting camera permission:', error);
+            });
     </script>
 </body>
 </html>
