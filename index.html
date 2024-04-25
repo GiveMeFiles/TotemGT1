@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TotemGT1.io</title>
+    <title>TotemGT1</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/favicon-16x16.png">
+    <link rel="manifest" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/site.webmanifest">
+    <link rel="mask-icon" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
     <style>
         body {
             margin: 0;
@@ -26,7 +33,7 @@
     <div id="ar-container">
         <div id="ar-view"></div>
     </div>
-    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.163.0/three.module.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.124.0/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.2.2/aframe-ar.js"></script>
     <script>
         function init() {
@@ -37,7 +44,7 @@
 
                     // Load the GLB model
                     const loader = new THREE.GLTFLoader();
-                    loader.load('LOGO_GREENTECH250424.glb', (gltf) => {
+                    loader.load('https://github.com/GiveMeFiles/TotemGT1/blob/main/LOGO_GREENTECH250424.glb', (gltf) => {
                         const model = gltf.scene;
                         model.scale.set(0.5, 0.5, 0.5); // Increased the scale to make the model larger
 
@@ -48,13 +55,13 @@
 
                         const arCamera = new THREEx.ArToolkitContext({
                             detectionMode: 'mono',
-                            patternRatio: 0.5 // Ajustez ce ratio en fonction de la taille de votre QR code
+                            patternRatio: 0.5 // Adjust this ratio based on the size of your QR code
                         });
 
-                        // Configurez AR.js pour utiliser votre QR code comme marqueur
+                        // Configure AR.js to use your QR code as a marker
                         const markerControls = new THREEx.ArMarkerControls(arCamera, {
                             type: 'pattern',
-                            patternUrl: 'https://github.com/GiveMeFiles/TotemGT1/blob/main/QR.png'
+                            patternUrl: 'https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/QR.png'
                         });
 
                         // Initialize AR context
