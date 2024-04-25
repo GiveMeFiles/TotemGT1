@@ -14,70 +14,44 @@
 <body>
     <h1>Scan the QR code to see the logo in AR</h1>
 
+    <model-viewer
+        id="model-viewer"
+        src="logo.glb"
+        ar
+        camera-controls
+        autoplay
+        style="width: 100%; height: 100vh;"
+    ></model-viewer>
+
     <script>
-        // Set up the AR scene
-        const scene = new XR.Scene();
-        const camera = new XR.Camera();
-        const renderer = new XR.Renderer({
-            canvas: document.createElement('canvas'),
-            antialias: true,
-        });
-
-        // Load the 3D GLB logo model
-        fetch('logo.glb')
-            .then(response => response.arrayBuffer())
-            .then(buffer => {
-                const glb = new XR.GLTFLoader().parse(buffer);
-                const logo = glb.scene.children[0];
-                logo.scale.set(0.1, 0.1, 0.1); // Adjust the logo scale as needed
-                scene.add(logo);
-            });
-
         // Set up the QR code scanner
-        const qrScanner = new QRScanner({
-            onScan: (qrCode) => {
+        const qrScanner = new ZXing.BrowserQRCodeReader();
+
+        // Start the QR code scanner
+        qrScanner.decodeFromVideoDevice()
+            .then(result => {
                 // When the QR code is scanned, start the AR experience
-                startARExperience(qrCode);
-            },
-        });
+                startARExperience(result.text);
+            })
+            .catch(error => console.error('Error scanning QR code:', error));
 
         // Start the AR experience
         function startARExperience(qrCode) {
-            // Request access to the camera
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    // Create a video element to display the camera feed
-                    const video = document.createElement('video');
-                    video.srcObject = stream;
-                    video.play();
+            // Get the model viewer element
+            const modelViewer = document.getElementById('model-viewer');
 
-                    // Add the video element to the page
-                    document.body.appendChild(video);
+            // Set up the AR session
+            modelViewer.arSession = new ARSession(qrCode);
 
-                    // Create an AR marker using the QR code
-                    const marker = new XR.Marker(qrCode);
-
-                    // Add the marker to the scene
-                    scene.add(marker);
-
-                    // Start the AR renderer
-                    renderer.start();
-                })
-                .catch(error => console.error('Error accessing camera:', error));
+            // Start the AR experience
+            modelViewer.requestAR();
         }
-
-        // Render the AR scene
-        function render() {
-            requestAnimationFrame(render);
-            renderer.render(scene, camera);
-        }
-        render();
     </script>
 
-    <!-- Include the QRScanner library -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-scanner@1.2.0/dist/qrcode-scanner.min.js"></script>
+    <!-- Include the ZXing library -->
+    <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.18.5/umd/index.min.js"></script>
 
-    <!-- Include the AR.js library -->
-    <script src="https://cdn.jsdelivr.net/npm/@xr-three/ar.js@1.2.2/dist/ar.js"></script>
+    <!-- Include the Model-Viewer library -->
+    <script src="https://unpkg.com/@google/model-viewer@1.12.0/dist/model-viewer.js"></script>
 </body>
 </html>
