@@ -7,6 +7,7 @@
   <title>TotemGT1 AR</title>
   <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe-master.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ar.js@1.1.6/dist/ar.js"></script>
+  <script src="https://raw.githubusercontent.com/GiveMeFiles/ARWeb/main/focus.js"></script>
   <style>
     body {
       margin: 0;
@@ -32,9 +33,8 @@
     ARjs.init();
 
     // Generate the QR code pattern file dynamically
-    const qrcode = new ARjs.QRCode();
-    qrcode.addPattern('https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/qrcode.png');
-    const patternUrl = qrcode.generatePatternUrl();
+    const focus = new Focus();
+    const patternUrl = focus.generatePatternUrl();
 
     // Update the marker URL
     document.querySelector('a-marker').setAttribute('url', patternUrl);
