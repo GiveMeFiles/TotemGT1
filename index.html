@@ -1,38 +1,51 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TotemGT1</title>
-    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1.2.0/dist/aframe-master.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        #ar-view {
-            width: 100vw;
-            height: 100vh;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TotemGT1 AR</title>
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe-master.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ar.js@1.1.6/dist/ar.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+  </style>
 </head>
 <body>
-    <a-scene id="ar-view" arjs="source: webcam; debugUIEnabled: false;">
-        <a-assets>
-            <a-asset-item id="logo-glb" src="https://cors-anywhere.herokuapp.com/https://github.com/GiveMeFiles/TotemGT1/blob/main/LOGO%20GREENTECH250424.glb?raw=true"></a-asset-item>
-        </a-assets>
-        <a-entity gltf-model="#logo-glb" scale="0.1 0.1 0.1" position="0 0 -2"></a-entity>
-        <a-light type="ambient" color="#ffffff" intensity="1"></a-light>
-    </a-scene>
-    <script>
-        // Handle camera permission issues
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                console.log('Camera permission granted');
-            })
-            .catch(error => {
-                console.error('Error granting camera permission:', error);
-            });
-    </script>
+  <!-- Create a QR code marker -->
+  <a-scene embedded arjs="source: webcam; debugUIEnabled: false;">
+    <a-marker type="pattern" url="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/qrcode.patt">
+      <!-- Render the 3D logo -->
+      <a-entity gltf-model="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/TotemGT1.glb" scale="0.1 0.1 0.1" position="0 0 0"></a-entity>
+    </a-marker>
+    <!-- Add lighting to the scene -->
+    <a-light type="ambient" color="#ffffff"></a-light>
+    <a-light type="directional" color="#ffffff" position="-1 1 1"></a-light>
+  </a-scene>
+
+  <!-- Initialize the AR experience -->
+  <script>
+    // Initialize AR.js
+    ARjs.init();
+
+    // Get the QR code marker
+    const marker = document.querySelector('a-marker');
+
+    // Add an event listener to the marker
+    marker.addEventListener('markerFound', () => {
+      // Render the 3D logo
+      const logoEntity = document.querySelector('a-entity[gltf-model="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/TotemGT1.glb"]');
+      logoEntity.object3D.visible = true;
+    });
+
+    // Add an event listener to the scene
+    document.querySelector('a-scene').addEventListener('camera-ready', () => {
+      // Start the AR experience
+      ARjs.start();
+    });
+  </script>
 </body>
 </html>
