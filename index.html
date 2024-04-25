@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TotemGT1</title>
@@ -11,67 +11,30 @@
     <link rel="mask-icon" href="https://raw.githubusercontent.com/GiveMeFiles/TotemGT1/main/Favicon/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-	<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <style>
-        body {
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        #ar-container {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #ar-view {
-            width: 100%;
-            height: 100%;
-        }
+      body {
+        margin: 0;
+        background-color: #f0f0f0;
+      }
     </style>
-</head>
-<body>
-    <div id="ar-container">
-        <div id="ar-view"></div>
-    </div>
+  </head>
+  <body>
     <script>
-        function init() {
-            // Handle camera permission issues
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    console.log('Camera permission granted');
-
-                    // Load the GLB model using A-Frame
-                    const scene = document.createElement('a-scene');
-                    document.body.appendChild(scene);
-
-                    const assets = document.createElement('a-assets');
-                    scene.appendChild(assets);
-
-                    const assetItem = document.createElement('a-asset-item');
-                    assetItem.id = 'logo-glb';
-                    assetItem.src = 'https://cors-anywhere.herokuapp.com/https://github.com/GiveMeFiles/TotemGT1/blob/main/LOGO%20GREENTECH250424.glb?raw=true';
-                    assets.appendChild(assetItem);
-
-                    const entity = document.createElement('a-entity');
-                    entity.setAttribute('gltf-model', '#logo-glb');
-
-                    // Add a light to the scene (e.g., a directional light)
-                    const light = document.createElement('a-light');
-                    light.setAttribute('type', 'directional');
-                    light.setAttribute('color', '#ffffff');
-                    light.setAttribute('intensity', 1);
-                    scene.appendChild(light);
-
-                    scene.appendChild(entity);
-                })
-                .catch(error => {
-                    console.error('Error granting camera permission:', error);
-                });
-        }
-
-        // Call init when the page loads
-        init();
+      function init() {
+        navigator.mediaDevices.getUserMedia({
+          video: true
+        }).then(stream => {
+          console.log('Camera permission granted');
+          const scene = document.createElement('a-scene');
+          document.body.appendChild(scene);
+          const entity = document.createElement('a-entity');
+          entity.setAttribute('gltf-model', 'https://cors-anywhere.herokuapp.com/https://github.com/GiveMeFiles/TotemGT1/blob/main/LOGO%20GREENTECH250424.glb?raw=true');
+          scene.appendChild(entity);
+        }).catch(error => {
+          console.error('Error granting camera permission:', error);
+        });
+      } // Call init when the page loads init(); 
     </script>
-</body>
+  </body>
 </html>
