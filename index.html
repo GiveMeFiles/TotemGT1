@@ -63,7 +63,16 @@
                     light.setAttribute('intensity', 1);
                     scene.appendChild(light);
 
+                    // Update lighting to use the new system
+                    scene.lights = [light];
+                    scene.lights[0].castShadow = true;
+
                     scene.appendChild(entity);
+
+                    // Add some debugging logs to help identify the e null pointer exception
+                    console.log('Scene:', scene);
+                    console.log('Entity:', entity);
+                    console.log('Light:', light);
                 })
                 .catch(error => {
                     console.error('Error granting camera permission:', error);
