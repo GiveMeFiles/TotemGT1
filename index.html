@@ -35,43 +35,43 @@
         <div id="ar-view"></div>
     </div>
     <script>
-  function init() {
-    // Handle camera permission issues
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
-        console.log('Camera permission granted');
+        function init() {
+            // Handle camera permission issues
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    console.log('Camera permission granted');
 
-        // Load the GLB model using A-Frame
-        const scene = document.createElement('a-scene');
-        document.body.appendChild(scene);
+                    // Load the GLB model using A-Frame
+                    const scene = document.createElement('a-scene');
+                    document.body.appendChild(scene);
 
-        const assets = document.createElement('a-assets');
-        scene.appendChild(assets);
+                    const assets = document.createElement('a-assets');
+                    scene.appendChild(assets);
 
-        const assetItem = document.createElement('a-asset-item');
-        assetItem.id = 'logo-glb';
-        assetItem.src = 'https://cors-anywhere.herokuapp.com/https://github.com/GiveMeFiles/TotemGT1/blob/main/LOGO%20GREENTECH250424.glb?raw=true';
-        assets.appendChild(assetItem);
+                    const assetItem = document.createElement('a-asset-item');
+                    assetItem.id = 'logo-glb';
+                    assetItem.src = 'https://cors-anywhere.herokuapp.com/https://github.com/GiveMeFiles/TotemGT1/blob/main/LOGO%20GREENTECH250424.glb?raw=true';
+                    assets.appendChild(assetItem);
 
-        const entity = document.createElement('a-entity');
-        entity.setAttribute('gltf-model', '#logo-glb');
+                    const entity = document.createElement('a-entity');
+                    entity.setAttribute('gltf-model', '#logo-glb');
 
-        // Add a light to the scene (e.g., a directional light)
-        const light = document.createElement('a-light');
-        light.setAttribute('type', 'directional');
-        light.setAttribute('color', '#ffffff');
-        light.setAttribute('intensity', 1);
-        scene.appendChild(light);
+                    // Add a light to the scene (e.g., a directional light)
+                    const light = document.createElement('a-light');
+                    light.setAttribute('type', 'directional');
+                    light.setAttribute('color', '#ffffff');
+                    light.setAttribute('intensity', 1);
+                    scene.appendChild(light);
 
-        scene.appendChild(entity);
-      })
-      .catch(error => {
-        console.error('Error granting camera permission:', error);
-      });
-  }
+                    scene.appendChild(entity);
+                })
+                .catch(error => {
+                    console.error('Error granting camera permission:', error);
+                });
+        }
 
-  // Call init when the page loads
-  init();
-</script>
+        // Call init when the page loads
+        init();
+    </script>
 </body>
 </html>
